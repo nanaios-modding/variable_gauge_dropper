@@ -1,5 +1,6 @@
 package com.nanaios.variable_gauge_dropper.capabilities;
 
+import com.nanaios.variable_gauge_dropper.VariableGaugeDropper;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -39,9 +40,9 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
 
     private VariableGaugeDropperContentsHandler() {
         mergedTank = MergedTank.create(
-                new RateLimitFluidHandler.RateLimitFluidTank(() -> transferRate, () -> capacity, this),
+                new RateLimitFluidHandler.RateLimitFluidTank(() -> transferRate, this::getCapacity, this),
                 new RateLimitChemicalTank.RateLimitGasTank(
-                        () -> transferRate, () -> capacity,
+                        () -> transferRate, this::getCapacity,
                         ChemicalTankBuilder.GAS.alwaysTrueBi,
                         ChemicalTankBuilder.GAS.alwaysTrueBi,
                         ChemicalTankBuilder.GAS.alwaysTrue,
@@ -53,15 +54,15 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
                         )
                 ),
 
-                new RateLimitChemicalTank.RateLimitInfusionTank(() -> transferRate, () -> capacity, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+                new RateLimitChemicalTank.RateLimitInfusionTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
                         ChemicalTankBuilder.INFUSION.alwaysTrue, infusionHandler = new DynamicChemicalHandler.DynamicInfusionHandler(side -> infusionTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
                         DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks))),
 
-                new RateLimitChemicalTank.RateLimitPigmentTank(() -> transferRate, () -> capacity, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
+                new RateLimitChemicalTank.RateLimitPigmentTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
                         ChemicalTankBuilder.PIGMENT.alwaysTrue, pigmentHandler = new DynamicChemicalHandler.DynamicPigmentHandler(side -> pigmentTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
                         DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.PIGMENT_TANKS, pigmentTanks))),
 
-                new RateLimitChemicalTank.RateLimitSlurryTank(() -> transferRate, () -> capacity, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
+                new RateLimitChemicalTank.RateLimitSlurryTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
                         ChemicalTankBuilder.SLURRY.alwaysTrue, slurryHandler = new DynamicChemicalHandler.DynamicSlurryHandler(side -> slurryTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
                         DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
         );
@@ -69,14 +70,20 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
         this.fluidTanks = Collections.singletonList(mergedTank.getFluidTank());
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
     public void setStackSize(int value) {
         capacity = value;
 
-        //mergedTank.getFluidTank().setStackSize(value, Action.EXECUTE);
-        //mergedTank.getGasTank().setStackSize(value, Action.EXECUTE);
-        //mergedTank.getInfusionTank().setStackSize(value, Action.EXECUTE);
-        //mergedTank.getPigmentTank().setStackSize(value, Action.EXECUTE);
-        //mergedTank.getSlurryTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getFluidTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getGasTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getInfusionTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getPigmentTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getSlurryTank().setStackSize(value, Action.EXECUTE);
+
+        VariableGaugeDropper.LOGGER.info("Set stack size to {}",mergedTank.getFluidTank().getCapacity());
 
         transferRate = (int) Math.max(1,value*0.016);
     }
