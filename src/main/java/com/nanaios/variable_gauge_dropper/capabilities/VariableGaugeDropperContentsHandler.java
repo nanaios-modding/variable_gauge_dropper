@@ -1,5 +1,6 @@
 package com.nanaios.variable_gauge_dropper.capabilities;
 
+import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -28,7 +29,7 @@ import java.util.function.Consumer;
 public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandler<MergedTank> implements IMekanismFluidHandler, IFluidHandlerItem {
 
     private static final int CAPACITY = 16 * FluidType.BUCKET_VOLUME;
-    private static final int TRANSFER_RATE = 256;
+    private int transferRate = 256;
 
     public static VariableGaugeDropperContentsHandler create() {
         return new VariableGaugeDropperContentsHandler();
@@ -37,23 +38,33 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
     protected final List<IExtendedFluidTank> fluidTanks;
 
     private VariableGaugeDropperContentsHandler() {
-        RateLimitFluidHandler.RateLimitFluidTank n =  new RateLimitFluidHandler.RateLimitFluidTank(() -> TRANSFER_RATE, () -> CAPACITY, this);
         mergedTank = MergedTank.create(
-                new RateLimitFluidHandler.RateLimitFluidTank(() -> TRANSFER_RATE, () -> CAPACITY, this),
-                new RateLimitChemicalTank.RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
+                new RateLimitFluidHandler.RateLimitFluidTank(() -> transferRate, () -> CAPACITY, this),
+                new RateLimitChemicalTank.RateLimitGasTank(() -> transferRate, () -> CAPACITY, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
                         ChemicalTankBuilder.GAS.alwaysTrue, null, gasHandler = new DynamicChemicalHandler.DynamicGasHandler(side -> gasTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
                         DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),
-                new RateLimitChemicalTank.RateLimitInfusionTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+                new RateLimitChemicalTank.RateLimitInfusionTank(() -> transferRate, () -> CAPACITY, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
                         ChemicalTankBuilder.INFUSION.alwaysTrue, infusionHandler = new DynamicChemicalHandler.DynamicInfusionHandler(side -> infusionTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
                         DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks))),
-                new RateLimitChemicalTank.RateLimitPigmentTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
+                new RateLimitChemicalTank.RateLimitPigmentTank(() -> transferRate, () -> CAPACITY, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
                         ChemicalTankBuilder.PIGMENT.alwaysTrue, pigmentHandler = new DynamicChemicalHandler.DynamicPigmentHandler(side -> pigmentTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
                         DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.PIGMENT_TANKS, pigmentTanks))),
-                new RateLimitChemicalTank.RateLimitSlurryTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
+                new RateLimitChemicalTank.RateLimitSlurryTank(() -> transferRate, () -> CAPACITY, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
                         ChemicalTankBuilder.SLURRY.alwaysTrue, slurryHandler = new DynamicChemicalHandler.DynamicSlurryHandler(side -> slurryTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
                         DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
         );
+
         this.fluidTanks = Collections.singletonList(mergedTank.getFluidTank());
+    }
+
+    public void setStackSize(int value) {
+        mergedTank.getFluidTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getGasTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getInfusionTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getPigmentTank().setStackSize(value, Action.EXECUTE);
+        mergedTank.getSlurryTank().setStackSize(value, Action.EXECUTE);
+
+        transferRate = (int) Math.max(1,value*0.016);
     }
 
     @Override
@@ -82,6 +93,6 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
         super.gatherCapabilityResolvers(consumer);
-        consumer.accept(BasicCapabilityResolver.constant(ForgeCapabilities.FLUID_HANDLER_ITEM, this));
+        consumer.accept(BasicCapabilityResolver.constant(Capabilities.VARIABLE_GAUGE_DROPPER_CONTENTS_HANDLER, this));
     }
 }

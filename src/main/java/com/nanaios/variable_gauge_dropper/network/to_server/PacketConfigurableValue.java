@@ -25,6 +25,7 @@ public class PacketConfigurableValue implements IMekanismPacket {
             if (!stack.isEmpty()) {
                 if (stack.getItem() instanceof IConfigurableItem configurableItem) {
                     VariableGaugeDropper.LOGGER.info("Setting configurable value to {} for slot {}", value, slot);
+                    configurableItem.setStackSize(stack,value);
                 }
             }
         }
