@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class ItemVariableGaugeDropper extends ItemGaugeDropper {
+public class ItemVariableGaugeDropper extends ItemGaugeDropper implements IConfigurableItem {
     public ItemVariableGaugeDropper(Properties properties) {
         super(properties);
     }

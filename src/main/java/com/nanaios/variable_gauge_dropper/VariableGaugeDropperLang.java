@@ -5,7 +5,8 @@ import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 
 public enum VariableGaugeDropperLang implements ILangEntry {
-    KEY_MODULE_TWEAKER("key", "module_tweaker");
+    VARIABLE_GAUGE_DROPPER("constants","mod_name"),
+    KEY_CONFIGURABLE("key", "configurable");
     private final String key;
 
     VariableGaugeDropperLang(String type, String path) {
