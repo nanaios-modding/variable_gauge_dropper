@@ -41,7 +41,7 @@ public class ConfigurableItemContainer extends MekanismContainer {
                 }
             });
         }
-        addSlot(new OffhandSlot(inv, 40, 8, 16 + 18 * 4) {
+        addSlot(new OffhandSlot(inv, 40, 23, 161) {
             @Override
             public boolean mayPickup(@NotNull Player player) {
                 return false;
