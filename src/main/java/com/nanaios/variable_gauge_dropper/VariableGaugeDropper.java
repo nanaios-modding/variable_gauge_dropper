@@ -49,6 +49,6 @@ public class VariableGaugeDropper {
 
     @SuppressWarnings("removal")
     public static ResourceLocation rl(@NotNull String path) {
-        return new ResourceLocation(path);
+        return new ResourceLocation(VariableGaugeDropper.MODID,path);
     }
 }
