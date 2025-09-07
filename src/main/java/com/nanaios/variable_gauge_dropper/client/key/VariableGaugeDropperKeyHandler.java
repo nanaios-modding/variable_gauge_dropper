@@ -3,6 +3,8 @@ package com.nanaios.variable_gauge_dropper.client.key;
 import com.nanaios.variable_gauge_dropper.VariableGaugeDropper;
 import com.nanaios.variable_gauge_dropper.VariableGaugeDropperLang;
 import com.nanaios.variable_gauge_dropper.container.ConfigurableItemContainer;
+import com.nanaios.variable_gauge_dropper.network.to_server.PacketOpenGui;
+import com.nanaios.variable_gauge_dropper.network.to_server.PacketOpenGui.GuiType;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.key.MekKeyBindingBuilder;
 import net.minecraft.client.KeyMapping;
@@ -19,7 +21,7 @@ public class VariableGaugeDropperKeyHandler {
             .onKeyDown((kb, isRepeat) -> {
                 Player player = Minecraft.getInstance().player;
                 if (player != null && ConfigurableItemContainer.hasConfigurableItem(player)) {
-                    //Mekanism.packetHandler().sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
+                    VariableGaugeDropper.packetHandler().sendToServer(new PacketOpenGui(GuiType.CONFIGURABLE));
                 }
             }).build();
     public static void registerKeybindings(RegisterKeyMappingsEvent event) {
