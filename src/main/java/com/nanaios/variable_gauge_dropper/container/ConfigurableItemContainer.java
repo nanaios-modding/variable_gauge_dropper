@@ -3,7 +3,12 @@ package com.nanaios.variable_gauge_dropper.container;
 import com.nanaios.variable_gauge_dropper.item.IConfigurableItem;
 import com.nanaios.variable_gauge_dropper.registries.VariableGaugeDropperContainerTypes;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.ArmorSlot;
+import mekanism.common.inventory.container.slot.HotBarSlot;
+import mekanism.common.inventory.container.slot.OffhandSlot;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,22 +28,6 @@ public class ConfigurableItemContainer extends MekanismContainer {
 
     @Override
     protected void addInventorySlots(@NotNull Inventory inv) {
-        /*
-        int armorInventorySize = inv.armor.size();
-        for (int index = 0; index < armorInventorySize; index++) {
-            EquipmentSlot slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + armorInventorySize - index - 1];
-            addSlot(new ArmorSlot(inv, 36 + slotType.ordinal() - 2, 8, 8 + index * 18, slotType) {
-                @Override
-                public boolean mayPickup(@NotNull Player player) {
-                    return false;
-                }
-
-                @Override
-                public boolean mayPlace(@NotNull ItemStack stack) {
-                    return false;
-                }
-            });
-        }
         for (int slotY = 0; slotY < Inventory.getSelectionSize(); slotY++) {
             addSlot(new HotBarSlot(inv, slotY, 43 + slotY * 18, 161) {
                 @Override
@@ -62,7 +51,7 @@ public class ConfigurableItemContainer extends MekanismContainer {
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return false;
             }
-        }); */
+        });
     }
 
     public static boolean isConfigurableItem(ItemStack stack) {
