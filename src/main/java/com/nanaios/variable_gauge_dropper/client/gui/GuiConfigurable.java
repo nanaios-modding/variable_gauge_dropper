@@ -1,11 +1,15 @@
 package com.nanaios.variable_gauge_dropper.client.gui;
 
+import com.nanaios.variable_gauge_dropper.VariableGaugeDropper;
 import com.nanaios.variable_gauge_dropper.container.ConfigurableItemContainer;
+import com.nanaios.variable_gauge_dropper.network.to_server.PacketConfigurableValue;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismSounds;
+import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -14,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
 
     private int selected = -1;
+    private GuiTextField capacityField;
 
     public GuiConfigurable(ConfigurableItemContainer configurableItemContainer, Inventory inv, Component title) {
         super(configurableItemContainer, inv, title);
@@ -36,6 +41,11 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
                     .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                     .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
+        capacityField = addRenderableWidget(new GuiTextField(this, 115, 26, 50, 12));
+        capacityField.setFocused(true);
+        capacityField.setInputValidator(InputValidator.DIGIT)
+                .setEnterHandler(this::setCapacity)
+                .setMaxLength(6);
     }
 
     private boolean select(int index) {
@@ -58,5 +68,11 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
         return menu.slots.get(index).getItem();
     }
 
+    private void setCapacity() {
+        if(!capacityField.getText().isEmpty()) {
+            VariableGaugeDropper.packetHandler().sendToServer(new PacketConfigurableValue(selected,Integer.parseInt(capacityField.getText())));
+            capacityField.setText("");
+        }
+    }
 }
 

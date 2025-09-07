@@ -42,8 +42,13 @@ public class PacketOpenGui implements IMekanismPacket {
     }
 
     public enum GuiType {
-        CONFIGURABLE(() -> new ContainerProvider(VariableGaugeDropperLang.KEY_CONFIGURABLE, (id, inv, player) -> VariableGaugeDropperContainerTypes.CONFIGURABLE_CONTAINER.get().create(id, inv)),
-                ConfigurableItemContainer::hasConfigurableItem);
+        CONFIGURABLE(
+                () -> new ContainerProvider(
+                        VariableGaugeDropperLang.KEY_CONFIGURABLE,
+                        (id, inv, player) -> VariableGaugeDropperContainerTypes.CONFIGURABLE_CONTAINER.get().create(id, inv)
+                ),
+                ConfigurableItemContainer::hasConfigurableItem
+        );
 
         private final Supplier<MenuProvider> containerSupplier;
         private final Predicate<Player> shouldOpenForPlayer;
