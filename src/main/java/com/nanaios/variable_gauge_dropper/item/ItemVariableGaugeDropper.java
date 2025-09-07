@@ -25,11 +25,9 @@ public class ItemVariableGaugeDropper extends ItemGaugeDropper implements IConfi
     }
 
     public void setStackSize(ItemStack stack,int value) {
-        VariableGaugeDropper.LOGGER.info("Setting stack size to {}", value);
         FluidUtil.getFluidHandler(stack).ifPresent(cap -> {
             if (cap instanceof VariableGaugeDropperContentsHandler) {
-                VariableGaugeDropper.LOGGER.info("Found VariableGaugeDropperContentsHandler");
-                //((VariableGaugeDropperContentsHandler) cap).setStackSize(value);
+                ((VariableGaugeDropperContentsHandler) cap).setStackSize(value);
             }
         });
     }
