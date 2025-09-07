@@ -1,5 +1,6 @@
 package com.nanaios.variable_gauge_dropper.client.key;
 
+import com.nanaios.variable_gauge_dropper.VariableGaugeDropper;
 import com.nanaios.variable_gauge_dropper.VariableGaugeDropperLang;
 import com.nanaios.variable_gauge_dropper.container.ConfigurableItemContainer;
 import mekanism.client.ClientRegistrationUtil;
