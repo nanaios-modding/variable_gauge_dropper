@@ -93,6 +93,6 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
         super.gatherCapabilityResolvers(consumer);
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.VARIABLE_GAUGE_DROPPER_CONTENTS_HANDLER, this));
+        consumer.accept(BasicCapabilityResolver.constant(ForgeCapabilities.FLUID_HANDLER_ITEM, this));
     }
 }

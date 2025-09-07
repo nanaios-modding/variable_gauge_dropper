@@ -8,8 +8,11 @@ import mekanism.common.item.ItemGaugeDropper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ItemVariableGaugeDropper extends ItemGaugeDropper implements IConfigurableItem {
     public ItemVariableGaugeDropper(Properties properties) {
@@ -23,9 +26,11 @@ public class ItemVariableGaugeDropper extends ItemGaugeDropper implements IConfi
 
     public void setStackSize(ItemStack stack,int value) {
         VariableGaugeDropper.LOGGER.info("Setting stack size to {}", value);
-        stack.getCapability(Capabilities.VARIABLE_GAUGE_DROPPER_CONTENTS_HANDLER).ifPresent(handler -> {
-            VariableGaugeDropper.LOGGER.info("Found handler, setting stack size");
-            handler.setStackSize(value);
+        FluidUtil.getFluidHandler(stack).ifPresent(cap -> {
+            if (cap instanceof VariableGaugeDropperContentsHandler) {
+                VariableGaugeDropper.LOGGER.info("Found VariableGaugeDropperContentsHandler");
+                //((VariableGaugeDropperContentsHandler) cap).setStackSize(value);
+            }
         });
     }
 }
