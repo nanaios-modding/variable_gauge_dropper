@@ -10,10 +10,12 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
 
@@ -41,11 +43,17 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
                     .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                     .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
-        capacityField = addRenderableWidget(new GuiTextField(this, 80, 20, 50, 12));
+        capacityField = addRenderableWidget(new GuiTextField(this, 78, 25, 50, 12));
         capacityField.setFocused(true);
         capacityField.setInputValidator(InputValidator.DIGIT)
                 .setEnterHandler(this::setCapacity)
                 .setMaxLength(6);
+    }
+
+    @Override
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        //super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        renderTitleText(guiGraphics);
     }
 
     private boolean select(int index) {
