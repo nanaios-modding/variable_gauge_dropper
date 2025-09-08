@@ -1,12 +1,21 @@
 package com.nanaios.variable_gauge_dropper.item;
 
+import com.nanaios.variable_gauge_dropper.VariableGaugeDropperLang;
 import com.nanaios.variable_gauge_dropper.capabilities.VariableGaugeDropperContentsHandler;
+import com.nanaios.variable_gauge_dropper.client.key.VariableGaugeDropperKeyHandler;
+import mekanism.api.text.EnumColor;
+import mekanism.client.key.MekKeyHandler;
+import mekanism.client.key.MekanismKeyHandler;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.ItemGaugeDropper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,6 +49,16 @@ public class ItemVariableGaugeDropper extends ItemGaugeDropper implements IConfi
                 handler.setStackSize(value);
             }
         });
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
+            tooltip.add(VariableGaugeDropperLang.DESCRIPTION_VARIABLE_GAUGE_DROPPER.translate(VariableGaugeDropperKeyHandler.configurableKey.getTranslatedKeyMessage()));
+        } else {
+            super.appendHoverText(stack, world, tooltip, flag);
+            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+        }
     }
 
     @Override

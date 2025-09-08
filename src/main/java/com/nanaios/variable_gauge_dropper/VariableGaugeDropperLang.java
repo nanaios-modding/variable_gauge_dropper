@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public enum VariableGaugeDropperLang implements ILangEntry {
     VARIABLE_GAUGE_DROPPER("constants","mod_name"),
+    GUI_CAPACITY_TEXT("gui","text.capacity"),
+    DESCRIPTION_VARIABLE_GAUGE_DROPPER("description","variable_gauge_dropper"),
     KEY_CONFIGURABLE("key", "configurable");
     private final String key;
 

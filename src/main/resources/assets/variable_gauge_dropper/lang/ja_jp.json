@@ -1,5 +1,7 @@
 {
   "constants.variable_gauge_dropper.mod_name": "Variable Gauge Dropper",
   "key.variable_gauge_dropper.configurable": "スポイトの設定",
-  "item.variable_gauge_dropper.variable_gauge_dropper": "可変計量スポイト"
+  "item.variable_gauge_dropper.variable_gauge_dropper": "可変計量スポイト",
+  "description.variable_gauge_dropper.variable_gauge_dropper": "容量の設定が可能になったスポイトです。%1$sキーで容量を変更できます。",
+  "gui.variable_gauge_dropper.text.capacity": "容量 :"
 }
