@@ -1,7 +1,9 @@
 package com.nanaios.variable_gauge_dropper.client.gui;
 
 import com.nanaios.variable_gauge_dropper.VariableGaugeDropper;
+import com.nanaios.variable_gauge_dropper.capabilities.VariableGaugeDropperContentsHandler;
 import com.nanaios.variable_gauge_dropper.container.ConfigurableItemContainer;
+import com.nanaios.variable_gauge_dropper.item.ItemVariableGaugeDropper;
 import com.nanaios.variable_gauge_dropper.network.to_server.PacketConfigurableValue;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -43,7 +45,7 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
                     .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                     .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
-        capacityField = addRenderableWidget(new GuiTextField(this, 78, 25, 50, 12));
+        capacityField = addRenderableWidget(new GuiTextField(this, 75, 25, 50, 12));
         capacityField.setFocused(true);
         capacityField.setInputValidator(InputValidator.DIGIT)
                 .setEnterHandler(this::setCapacity)
@@ -52,8 +54,9 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
 
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        //super.drawForegroundText(guiGraphics, mouseX, mouseY);
         renderTitleText(guiGraphics);
+        drawString(guiGraphics ,Component.literal("0mb ≦"),45,28,titleTextColor());
+        drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),135,28,titleTextColor());
     }
 
     private boolean select(int index) {
