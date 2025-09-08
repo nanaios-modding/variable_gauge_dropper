@@ -1,9 +1,12 @@
 package com.nanaios.variable_gauge_dropper.capabilities;
 
-import com.nanaios.variable_gauge_dropper.VariableGaugeDropper;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.DynamicHandler;
@@ -18,7 +21,6 @@ import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,42 +31,45 @@ import java.util.function.Consumer;
 
 public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandler<MergedTank> implements IMekanismFluidHandler, IFluidHandlerItem {
 
-    private int capacity = 16 * FluidType.BUCKET_VOLUME;
-    private int transferRate = 256;
+    private final int capacity;
+    private final int transferRate;
 
-    public static VariableGaugeDropperContentsHandler create() {
-        return new VariableGaugeDropperContentsHandler();
+    private final IExtendedFluidTank fluidTank;
+    private final IGasTank gasTank;
+    private final IInfusionTank infusionTank;
+    private final IPigmentTank pigmentTank;
+    private final ISlurryTank slurryTank;
+
+    public static VariableGaugeDropperContentsHandler create(int capacity) {
+        return new VariableGaugeDropperContentsHandler(capacity);
     }
 
     protected final List<IExtendedFluidTank> fluidTanks;
 
-    private VariableGaugeDropperContentsHandler() {
+    private VariableGaugeDropperContentsHandler(int capacity) {
+        this.capacity = capacity;
+        transferRate = (int) Math.max(0, capacity * 0.016);
+
+        fluidTank = new RateLimitFluidHandler.RateLimitFluidTank(() -> transferRate, this::getCapacity, this);
+        gasTank = new RateLimitChemicalTank.RateLimitGasTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
+                ChemicalTankBuilder.GAS.alwaysTrue, null, gasHandler = new DynamicChemicalHandler.DynamicGasHandler(side -> gasTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
+                DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks)));
+        infusionTank = new RateLimitChemicalTank.RateLimitInfusionTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+                ChemicalTankBuilder.INFUSION.alwaysTrue, infusionHandler = new DynamicChemicalHandler.DynamicInfusionHandler(side -> infusionTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
+                DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks)));
+        pigmentTank = new RateLimitChemicalTank.RateLimitPigmentTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
+                ChemicalTankBuilder.PIGMENT.alwaysTrue, pigmentHandler = new DynamicChemicalHandler.DynamicPigmentHandler(side -> pigmentTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
+                DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.PIGMENT_TANKS, pigmentTanks)));
+        slurryTank = new RateLimitChemicalTank.RateLimitSlurryTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
+                ChemicalTankBuilder.SLURRY.alwaysTrue, slurryHandler = new DynamicChemicalHandler.DynamicSlurryHandler(side -> slurryTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
+                DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)));
+
         mergedTank = MergedTank.create(
-                new RateLimitFluidHandler.RateLimitFluidTank(() -> transferRate, this::getCapacity, this),
-                new RateLimitChemicalTank.RateLimitGasTank(
-                        () -> transferRate, this::getCapacity,
-                        ChemicalTankBuilder.GAS.alwaysTrueBi,
-                        ChemicalTankBuilder.GAS.alwaysTrueBi,
-                        ChemicalTankBuilder.GAS.alwaysTrue,
-                        null,
-                        gasHandler = new DynamicChemicalHandler.DynamicGasHandler(
-                                side -> gasTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
-                                DynamicHandler.InteractPredicate.ALWAYS_TRUE,
-                                () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks)
-                        )
-                ),
-
-                new RateLimitChemicalTank.RateLimitInfusionTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.INFUSION.alwaysTrueBi, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
-                        ChemicalTankBuilder.INFUSION.alwaysTrue, infusionHandler = new DynamicChemicalHandler.DynamicInfusionHandler(side -> infusionTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
-                        DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.INFUSION_TANKS, infusionTanks))),
-
-                new RateLimitChemicalTank.RateLimitPigmentTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.PIGMENT.alwaysTrueBi, ChemicalTankBuilder.PIGMENT.alwaysTrueBi,
-                        ChemicalTankBuilder.PIGMENT.alwaysTrue, pigmentHandler = new DynamicChemicalHandler.DynamicPigmentHandler(side -> pigmentTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
-                        DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.PIGMENT_TANKS, pigmentTanks))),
-
-                new RateLimitChemicalTank.RateLimitSlurryTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.SLURRY.alwaysTrueBi, ChemicalTankBuilder.SLURRY.alwaysTrueBi,
-                        ChemicalTankBuilder.SLURRY.alwaysTrue, slurryHandler = new DynamicChemicalHandler.DynamicSlurryHandler(side -> slurryTanks, DynamicHandler.InteractPredicate.ALWAYS_TRUE,
-                        DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
+                fluidTank,
+                gasTank,
+                infusionTank,
+                pigmentTank,
+                slurryTank
         );
 
         this.fluidTanks = Collections.singletonList(mergedTank.getFluidTank());
@@ -75,17 +80,11 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
     }
 
     public void setStackSize(int value) {
-        capacity = value;
-
-        mergedTank.getFluidTank().setStackSize(value, Action.EXECUTE);
-        mergedTank.getGasTank().setStackSize(value, Action.EXECUTE);
-        mergedTank.getInfusionTank().setStackSize(value, Action.EXECUTE);
-        mergedTank.getPigmentTank().setStackSize(value, Action.EXECUTE);
-        mergedTank.getSlurryTank().setStackSize(value, Action.EXECUTE);
-
-        VariableGaugeDropper.LOGGER.info("Set stack size to {}",mergedTank.getFluidTank().getCapacity());
-
-        transferRate = (int) Math.max(1,value*0.016);
+        fluidTank.setStackSize(Math.min(fluidTank.getFluidAmount(),value), Action.EXECUTE);
+        gasTank.setStackSize(Math.min(gasTank.getStored(),value), Action.EXECUTE);
+        infusionTank.setStackSize(Math.min(infusionTank.getStored(),value), Action.EXECUTE);
+        pigmentTank.setStackSize(Math.min(pigmentTank.getStored(),value), Action.EXECUTE);
+        slurryTank.setStackSize(Math.min(slurryTank.getStored(),value), Action.EXECUTE);
     }
 
     @Override
