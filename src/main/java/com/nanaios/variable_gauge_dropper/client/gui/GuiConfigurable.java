@@ -46,7 +46,7 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
                     .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                     .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
-        capacityField = addRenderableWidget(new GuiTextField(this, 85, 25, 50, 12));
+        capacityField = addRenderableWidget(new GuiTextField(this, 75, 25, 50, 12));
         capacityField.setFocused(true);
         capacityField.setInputValidator(InputValidator.DIGIT)
                 .setEnterHandler(this::setCapacity)
@@ -56,7 +56,7 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics , VariableGaugeDropperLang.GUI_CAPACITY_TEXT.translate(),15,27,titleTextColor());
+        drawString(guiGraphics , VariableGaugeDropperLang.GUI_CAPACITY_TEXT.translate(),13,27,titleTextColor());
         drawString(guiGraphics ,Component.literal("0mb ≦"),45,27,titleTextColor());
         drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),130,27,titleTextColor());
     }
