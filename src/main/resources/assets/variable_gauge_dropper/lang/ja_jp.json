@@ -1,4 +1,5 @@
 {
   "constants.variable_gauge_dropper.mod_name": "Variable Gauge Dropper",
-  "key.variable_gauge_dropper.configurable": "スポイトの設定"
+  "key.variable_gauge_dropper.configurable": "スポイトの設定",
+  "item.variable_gauge_dropper.variable_gauge_dropper": "可変計量スポイト"
 }
