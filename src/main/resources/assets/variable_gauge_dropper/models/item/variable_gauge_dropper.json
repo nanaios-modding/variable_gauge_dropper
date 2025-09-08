@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "variable_gauge_dropper:item/variable_gauge_dropper"
+  }
+}
+
