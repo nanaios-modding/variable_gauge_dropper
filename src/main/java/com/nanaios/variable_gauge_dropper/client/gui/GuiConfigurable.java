@@ -22,8 +22,8 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
 
     public GuiConfigurable(ConfigurableItemContainer configurableItemContainer, Inventory inv, Component title) {
         super(configurableItemContainer, inv, title);
-        imageWidth = 248;
-        imageHeight += 20;
+        imageWidth = 200;
+        imageHeight = 70;
     }
 
     @Override
