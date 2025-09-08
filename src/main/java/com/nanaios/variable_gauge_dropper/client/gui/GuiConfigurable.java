@@ -23,7 +23,7 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
     public GuiConfigurable(ConfigurableItemContainer configurableItemContainer, Inventory inv, Component title) {
         super(configurableItemContainer, inv, title);
         imageWidth = 248;
-        //imageHeight += 20;
+        imageHeight += 20;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
                     .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                     .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
-        capacityField = addRenderableWidget(new GuiTextField(this, 115, 26, 50, 12));
+        capacityField = addRenderableWidget(new GuiTextField(this, 80, 20, 50, 12));
         capacityField.setFocused(true);
         capacityField.setInputValidator(InputValidator.DIGIT)
                 .setEnterHandler(this::setCapacity)

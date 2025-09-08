@@ -29,7 +29,7 @@ public class ConfigurableItemContainer extends MekanismContainer {
     @Override
     protected void addInventorySlots(@NotNull Inventory inv) {
         for (int slotY = 0; slotY < Inventory.getSelectionSize(); slotY++) {
-            addSlot(new HotBarSlot(inv, slotY, 43 + slotY * 18, 161) {
+            addSlot(new HotBarSlot(inv, slotY, 50 + slotY * 18, 40) {
                 @Override
                 public boolean mayPickup(@NotNull Player player) {
                     return false;
@@ -41,7 +41,7 @@ public class ConfigurableItemContainer extends MekanismContainer {
                 }
             });
         }
-        addSlot(new OffhandSlot(inv, 40, 23, 161) {
+        addSlot(new OffhandSlot(inv, 40, 25, 40) {
             @Override
             public boolean mayPickup(@NotNull Player player) {
                 return false;
