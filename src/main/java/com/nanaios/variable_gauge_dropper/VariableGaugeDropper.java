@@ -2,6 +2,7 @@ package com.nanaios.variable_gauge_dropper;
 
 import com.mojang.logging.LogUtils;
 import com.nanaios.variable_gauge_dropper.registries.VariableGaugeDropperContainerTypes;
+import com.nanaios.variable_gauge_dropper.registries.VariableGaugeDropperCreativeTabs;
 import com.nanaios.variable_gauge_dropper.registries.VariableGaugeDropperItems;
 import mekanism.common.lib.Version;
 import com.nanaios.variable_gauge_dropper.network.PacketHandler;
@@ -32,6 +33,7 @@ public class VariableGaugeDropper {
 
         VariableGaugeDropperItems.ITEMS.register(modEventBus);
         VariableGaugeDropperContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        VariableGaugeDropperCreativeTabs.CREATIVE_TABS.register(modEventBus);
 
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
 
