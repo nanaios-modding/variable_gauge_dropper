@@ -1,21 +1,16 @@
 package com.nanaios.variable_gauge_dropper.item;
 
-import com.nanaios.variable_gauge_dropper.VariableGaugeDropper;
-import com.nanaios.variable_gauge_dropper.capabilities.Capabilities;
 import com.nanaios.variable_gauge_dropper.capabilities.VariableGaugeDropperContentsHandler;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.ItemGaugeDropper;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ItemVariableGaugeDropper extends ItemGaugeDropper implements IConfigurableItem {
     public static final int MAX_CAPACITY = 64000;
@@ -45,5 +40,10 @@ public class ItemVariableGaugeDropper extends ItemGaugeDropper implements IConfi
                 handler.setStackSize(value);
             }
         });
+    }
+
+    @Override
+    public @NotNull Rarity getRarity(@NotNull ItemStack stack) {
+        return Rarity.RARE;
     }
 }

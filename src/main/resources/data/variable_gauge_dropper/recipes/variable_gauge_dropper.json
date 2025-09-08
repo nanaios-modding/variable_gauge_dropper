@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "eg",
+    "de"
+  ],
+  "key": {
+    "g": {
+      "tag": "mekanism:colorable/glass_panes"
+    },
+    "e": {
+      "item": "mekanism:elite_control_circuit"
+    },
+    "d": {
+      "item": "mekanism:gauge_dropper"
+    }
+  },
+  "result": {
+    "item": "variable_gauge_dropper:variable_gauge_dropper",
+    "count": 1
+  }
+}
