@@ -56,7 +56,7 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         drawString(guiGraphics ,Component.literal("0mb ≦"),45,28,titleTextColor());
-        drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),135,28,titleTextColor());
+        drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),130,28,titleTextColor());
     }
 
     private boolean select(int index) {
