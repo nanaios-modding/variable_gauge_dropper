@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " a ",
+    "aba",
+    "aca"
+  ],
+  "key": {
+    "a": {
+      "tag": "forge:ingots/lead"
+    },
+    "b": {
+      "item": "mekanism:gauge_dropper"
+    },
+    "c": {
+      "tag": "forge:dyes/orange"
+    }
+  },
+  "result": {
+    "item": "more_gauge_droppers:radioactive_gas_gauge_dropper",
+    "count": 1
+  }
+}

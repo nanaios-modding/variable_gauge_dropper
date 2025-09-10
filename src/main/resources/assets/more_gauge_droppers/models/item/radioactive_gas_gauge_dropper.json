@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "more_gauge_droppers:item/radioactive_gas_gauge_dropper"
+  }
+}
