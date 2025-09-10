@@ -1,11 +1,14 @@
 package com.nanaios.more_gauge_droppers.item;
 
 import com.nanaios.more_gauge_droppers.MoreGaugeDroppersLang;
+import com.nanaios.more_gauge_droppers.capabilities.RadioactiveGasGaugeDropperContentsHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.ItemGaugeDropper;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -33,5 +36,10 @@ public class ItemRadioactiveGasGaugeDropper extends ItemGaugeDropper {
             super.appendHoverText(stack, world, tooltip, flag);
             tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
+    }
+
+    @Override
+    protected void gatherCapabilities(List<ItemCapabilityWrapper.ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
+        capabilities.add(RadioactiveGasGaugeDropperContentsHandler.create());
     }
 }
