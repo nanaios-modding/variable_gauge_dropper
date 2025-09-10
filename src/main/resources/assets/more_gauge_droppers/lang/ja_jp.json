@@ -5,5 +5,5 @@
   "item.more_gauge_droppers.radioactive_gas_gauge_dropper": "放射性ガス計量スポイト",
   "description.more_gauge_droppers.variable_gauge_dropper": "容量の設定が可能になったスポイトです。%1$sキーで容量を変更できます。",
   "gui.more_gauge_droppers.text.capacity": "容量 :",
-  "description.more_gauge_droppers.radioactive_gas_gauge_dropper": "放射性ガスを扱うために設計されたスポイトです。"
+  "description.more_gauge_droppers.radioactive_gas_gauge_dropper": "放射性ガスを扱うために設計されたスポイトです。放射性ガスを保持している状態、もしくは放射性ガスを廃棄した際に被曝します。取り扱いに注意してください。"
 }
