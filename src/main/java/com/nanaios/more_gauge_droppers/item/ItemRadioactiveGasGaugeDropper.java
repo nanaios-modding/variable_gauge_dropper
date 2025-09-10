@@ -2,7 +2,10 @@ package com.nanaios.more_gauge_droppers.item;
 
 import com.nanaios.more_gauge_droppers.MoreGaugeDroppersLang;
 import com.nanaios.more_gauge_droppers.capabilities.RadioactiveGasGaugeDropperContentsHandler;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -11,8 +14,12 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.ItemGaugeDropper;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -49,6 +56,28 @@ public class ItemRadioactiveGasGaugeDropper extends ItemGaugeDropper {
             });
 
             tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+        }
+    }
+
+    @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
+            if (!world.isClientSide) {
+                clearChemicalTanks(stack, GasStack.EMPTY);
+            }
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+        }
+        return InteractionResultHolder.pass(stack);
+    }
+
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void clearChemicalTanks(ItemStack stack, STACK empty) {
+        Optional<IChemicalHandler<CHEMICAL, STACK>> cap = stack.getCapability(ChemicalUtil.getCapabilityForChemical(empty)).resolve();
+        if (cap.isPresent()) {
+            IChemicalHandler<CHEMICAL, STACK> handler = cap.get();
+            for (int tank = 0; tank < handler.getTanks(); tank++) {
+                handler.setChemicalInTank(tank, empty);
+            }
         }
     }
 
