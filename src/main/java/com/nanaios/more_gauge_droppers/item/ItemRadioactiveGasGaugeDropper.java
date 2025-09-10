@@ -21,6 +21,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -37,6 +39,21 @@ import static mekanism.common.util.StorageUtils.getRatio;
 public class ItemRadioactiveGasGaugeDropper extends ItemGaugeDropper {
     public ItemRadioactiveGasGaugeDropper(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean selected) {
+        super.inventoryTick(stack, level, entity, slot, selected);
+        if (!level.isClientSide) {
+            if(entity instanceof LivingEntity livingEntity) {
+                Optional<? extends IChemicalHandler<Gas, GasStack>> cap = stack.getCapability(ChemicalUtil.getCapabilityForChemical(GasStack.EMPTY)).resolve();
+                cap.ifPresent(handler -> forceRadiate(livingEntity,calcMagnitude(handler) / 10000d));
+            }
+        }
+    }
+
+    private void forceRadiate(LivingEntity entity, double magnitude) {
+        entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.radiate(magnitude));
     }
 
     @Override
@@ -73,24 +90,30 @@ public class ItemRadioactiveGasGaugeDropper extends ItemGaugeDropper {
         return InteractionResultHolder.pass(stack);
     }
 
-    private static void clearChemicalTanks(ItemStack stack,Player player) {
+    private void clearChemicalTanks(ItemStack stack,Player player) {
         Optional<IChemicalHandler<Gas, GasStack>> cap = stack.getCapability(ChemicalUtil.getCapabilityForChemical(GasStack.EMPTY)).resolve();
-        long amount = 0;
-        double radioactivity = 0.0;
         if (cap.isPresent()) {
             IChemicalHandler<Gas, GasStack> handler = cap.get();
-            Radiation radiation = handler.getChemicalInTank(0).getType().get(Radiation.class);
-            if(radiation !=null) {
-                radioactivity = radiation.getRadioactivity();
-            }
-
             for (int tank = 0; tank < handler.getTanks(); tank++) {
-                amount += handler.getChemicalInTank(tank).getAmount();
                 handler.setChemicalInTank(tank, GasStack.EMPTY);
             }
+
+            Coord4D coord4d = new Coord4D(player);
+            RadiationManager.get().radiate(coord4d, calcMagnitude(handler));
         }
-        Coord4D coord4d = new Coord4D(player);
-        RadiationManager.get().radiate(coord4d, amount * radioactivity);
+    }
+
+    private double calcMagnitude(IChemicalHandler<Gas, GasStack> handler) {
+        long amount = 0;
+        double radioactivity = 0.0;
+        Radiation radiation = handler.getChemicalInTank(0).getType().get(Radiation.class);
+        if(radiation !=null) {
+            radioactivity = radiation.getRadioactivity();
+        }
+        for (int tank = 0; tank < handler.getTanks(); tank++) {
+            amount += handler.getChemicalInTank(tank).getAmount();
+        }
+        return amount * radioactivity;
     }
 
     @Override
