@@ -2,10 +2,13 @@ package com.nanaios.more_gauge_droppers.item;
 
 import com.nanaios.more_gauge_droppers.MoreGaugeDroppersLang;
 import com.nanaios.more_gauge_droppers.capabilities.RadioactiveGasGaugeDropperContentsHandler;
+import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.item.ItemGaugeDropper;
 import net.minecraft.nbt.CompoundTag;
@@ -14,9 +17,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
+
+import static mekanism.common.util.StorageUtils.getRatio;
 
 public class ItemRadioactiveGasGaugeDropper extends ItemGaugeDropper {
     public ItemRadioactiveGasGaugeDropper(Properties properties) {
@@ -34,6 +41,13 @@ public class ItemRadioactiveGasGaugeDropper extends ItemGaugeDropper {
             tooltip.add(MoreGaugeDroppersLang.DESCRIPTION_RADIOACTIVE_GAS_GAUGE_DROPPER.translate());
         } else {
             super.appendHoverText(stack, world, tooltip, flag);
+
+            stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler -> {
+                if(handler instanceof RadioactiveGasGaugeDropperContentsHandler radioactiveGasGaugeDropperContentsHandler) {
+                    radioactiveGasGaugeDropperContentsHandler.setRadioactiveTooltip(tooltip);
+                }
+            });
+
             tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
@@ -41,5 +55,27 @@ public class ItemRadioactiveGasGaugeDropper extends ItemGaugeDropper {
     @Override
     protected void gatherCapabilities(List<ItemCapabilityWrapper.ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
         capabilities.add(RadioactiveGasGaugeDropperContentsHandler.create());
+    }
+
+    @Override
+    public int getBarWidth(@NotNull ItemStack stack) {
+        return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getDurabilityForDisplay(stack)));
+    }
+
+    private double getDurabilityForDisplay(ItemStack stack) {
+        double bestRatio = 0;
+        bestRatio = calculateRatio(stack, bestRatio);
+        return 1 - bestRatio;
+    }
+
+    private static double calculateRatio(ItemStack stack, double bestRatio) {
+        Optional<? extends IChemicalHandler<?, ?>> cap = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
+        if (cap.isPresent()) {
+            IChemicalHandler<?, ?> handler = cap.get();
+            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+                bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(tank).getAmount(), handler.getTankCapacity(tank)));
+            }
+        }
+        return bestRatio;
     }
 }

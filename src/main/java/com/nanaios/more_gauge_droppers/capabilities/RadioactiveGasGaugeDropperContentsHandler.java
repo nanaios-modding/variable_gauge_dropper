@@ -10,13 +10,13 @@ import mekanism.common.capabilities.DynamicHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler;
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
-import mekanism.common.capabilities.merged.GaugeDropperContentsHandler;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTankContentsHandler;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidType;
@@ -63,6 +63,10 @@ public class RadioactiveGasGaugeDropperContentsHandler  extends MergedTankConten
                         DynamicHandler.InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.SLURRY_TANKS, slurryTanks)))
         );
         this.fluidTanks = Collections.singletonList(mergedTank.getFluidTank());
+    }
+
+    public void setRadioactiveTooltip(@NotNull List<Component> tooltip) {
+        mergedTank.getGasTank().getType().getAttributes().forEach(chemicalAttribute -> chemicalAttribute.addTooltipText(tooltip));
     }
 
     @Override
