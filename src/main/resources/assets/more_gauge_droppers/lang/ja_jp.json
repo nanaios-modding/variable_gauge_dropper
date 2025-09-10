@@ -1,0 +1,9 @@
+{
+  "constants.more_gauge_droppers.mod_name": "Variable Gauge Dropper",
+  "key.more_gauge_droppers.configurable": "スポイトの設定",
+  "item.more_gauge_droppers.variable_gauge_dropper": "可変計量スポイト",
+  "item.more_gauge_droppers.radioactive_gas_gauge_dropper": "放射性ガス計量スポイト",
+  "description.more_gauge_droppers.variable_gauge_dropper": "容量の設定が可能になったスポイトです。%1$sキーで容量を変更できます。",
+  "gui.more_gauge_droppers.text.capacity": "容量 :",
+  "description.more_gauge_droppers.radioactive_gas_gauge_dropper": "放射性ガスを扱うために設計されたスポイトです。"
+}

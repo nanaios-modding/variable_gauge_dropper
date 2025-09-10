@@ -1,9 +1,0 @@
-{
-  "constants.variable_gauge_dropper.mod_name": "Variable Gauge Dropper",
-  "key.variable_gauge_dropper.configurable": "Configure Dropper",
-  "item.variable_gauge_dropper.variable_gauge_dropper": "Variable Gauge Dropper",
-  "item.variable_gauge_dropper.radioactive_gas_gauge_dropper": "Radioactive Gas Gauge Dropper",
-  "description.variable_gauge_dropper.variable_gauge_dropper": "An enhanced dropper with adjustable capacity. Use the %1$s key to change the capacity.",
-  "gui.variable_gauge_dropper.text.capacity": "Cap :",
-  "description.variable_gauge_dropper.radioactive_gas_gauge_dropper": "A dropper designed to handle radioactive gases."
-}
