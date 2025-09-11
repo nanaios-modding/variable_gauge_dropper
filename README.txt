@@ -1,4 +1,4 @@
-Add a variable gauge dropper.
+Add more gauge droppers.
 
 # Licence
 
