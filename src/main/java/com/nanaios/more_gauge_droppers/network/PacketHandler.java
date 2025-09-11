@@ -19,4 +19,14 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketOpenGui.class, PacketOpenGui::decode);
         registerClientToServer(PacketConfigurableValue.class, PacketConfigurableValue::decode);
     }
+
+    @Override
+    protected void registerClientToServer(PacketRegistrar registrar) {
+
+    }
+
+    @Override
+    protected void registerServerToClient(PacketRegistrar registrar) {
+
+    }
 }

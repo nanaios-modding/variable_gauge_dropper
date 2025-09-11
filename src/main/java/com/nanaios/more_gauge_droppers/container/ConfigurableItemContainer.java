@@ -9,9 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ConfigurableItemContainer extends MekanismContainer {
     public ConfigurableItemContainer(int id, Inventory inv) {
@@ -38,7 +36,7 @@ public class ConfigurableItemContainer extends MekanismContainer {
                 }
             });
         }
-        addSlot(new OffhandSlot(inv, 40, 8, 47) {
+        addSlot(new OffhandSlot(inv, 40, 8, 47, inv.player) {
             @Override
             public boolean mayPickup(@NotNull Player player) {
                 return false;
@@ -64,14 +62,13 @@ public class ConfigurableItemContainer extends MekanismContainer {
         return player.getInventory().offhand.stream().anyMatch(ConfigurableItemContainer::isConfigurableItem);
     }
 
-    @Nullable
-    @Override
-    public ICapabilityProvider getSecurityObject() {
-        return null;
-    }
-
     @Override
     public boolean stillValid(@NotNull Player player) {
         return true;
+    }
+
+    @Override
+    public boolean canPlayerAccess(@NotNull Player player) {
+        return false;
     }
 }
