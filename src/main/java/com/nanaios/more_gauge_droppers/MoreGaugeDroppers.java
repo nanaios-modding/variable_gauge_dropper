@@ -7,11 +7,10 @@ import com.nanaios.more_gauge_droppers.registries.MoreGaugeDroppersItems;
 import mekanism.common.lib.Version;
 import com.nanaios.more_gauge_droppers.network.PacketHandler;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -25,18 +24,15 @@ public class MoreGaugeDroppers {
     public static MoreGaugeDroppers instance;
     public final Version versionNumber;
 
-    @SuppressWarnings("removal")
-    public MoreGaugeDroppers(FMLJavaModLoadingContext context) {
+    public MoreGaugeDroppers(ModContainer modContainer, IEventBus modEventBus) {
         instance = this;
-
-        IEventBus modEventBus = context.getModEventBus();
 
         MoreGaugeDroppersItems.ITEMS.register(modEventBus);
         MoreGaugeDroppersContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MoreGaugeDroppersCreativeTabs.CREATIVE_TABS.register(modEventBus);
 
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
-
+        // versionNumber, packetHandler の初期化
+        versionNumber = new Version(modContainer); // 必要に応じて修正
         packetHandler = new PacketHandler();
         modEventBus.addListener(this::commonSetup);
     }
@@ -49,8 +45,7 @@ public class MoreGaugeDroppers {
         return instance.packetHandler;
     }
 
-    @SuppressWarnings("removal")
     public static ResourceLocation rl(@NotNull String path) {
-        return new ResourceLocation(MoreGaugeDroppers.MODID,path);
+        return ResourceLocation.fromNamespaceAndPath(MoreGaugeDroppers.MODID, path);
     }
 }
