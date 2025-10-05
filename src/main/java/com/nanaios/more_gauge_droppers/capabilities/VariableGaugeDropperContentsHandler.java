@@ -40,15 +40,15 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
     private final IPigmentTank pigmentTank;
     private final ISlurryTank slurryTank;
 
-    public static VariableGaugeDropperContentsHandler create(int capacity) {
-        return new VariableGaugeDropperContentsHandler(capacity);
+    public static VariableGaugeDropperContentsHandler create(int capacity, int transferRate) {
+        return new VariableGaugeDropperContentsHandler(capacity, transferRate);
     }
 
     protected final List<IExtendedFluidTank> fluidTanks;
 
-    private VariableGaugeDropperContentsHandler(int capacity) {
+    private VariableGaugeDropperContentsHandler(int capacity,int transferRate) {
         this.capacity = capacity;
-        transferRate = (int) Math.max(0, capacity * 0.016);
+        this.transferRate = transferRate;
 
         fluidTank = new RateLimitFluidHandler.RateLimitFluidTank(() -> transferRate, this::getCapacity, this);
         gasTank = new RateLimitChemicalTank.RateLimitGasTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
@@ -79,12 +79,12 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
         return capacity;
     }
 
-    public void setStackSize(int value) {
-        fluidTank.setStackSize(Math.min(fluidTank.getFluidAmount(),value), Action.EXECUTE);
-        gasTank.setStackSize(Math.min(gasTank.getStored(),value), Action.EXECUTE);
-        infusionTank.setStackSize(Math.min(infusionTank.getStored(),value), Action.EXECUTE);
-        pigmentTank.setStackSize(Math.min(pigmentTank.getStored(),value), Action.EXECUTE);
-        slurryTank.setStackSize(Math.min(slurryTank.getStored(),value), Action.EXECUTE);
+    public void setStackSize(int capacity) {
+        fluidTank.setStackSize(Math.min(fluidTank.getFluidAmount(),capacity), Action.EXECUTE);
+        gasTank.setStackSize(Math.min(gasTank.getStored(),capacity), Action.EXECUTE);
+        infusionTank.setStackSize(Math.min(infusionTank.getStored(),capacity), Action.EXECUTE);
+        pigmentTank.setStackSize(Math.min(pigmentTank.getStored(),capacity), Action.EXECUTE);
+        slurryTank.setStackSize(Math.min(slurryTank.getStored(),capacity), Action.EXECUTE);
     }
 
     @Override

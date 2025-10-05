@@ -4,7 +4,8 @@ import com.nanaios.more_gauge_droppers.MoreGaugeDroppers;
 import com.nanaios.more_gauge_droppers.MoreGaugeDroppersLang;
 import com.nanaios.more_gauge_droppers.container.ConfigurableItemContainer;
 import com.nanaios.more_gauge_droppers.item.ItemVariableGaugeDropper;
-import com.nanaios.more_gauge_droppers.network.to_server.PacketConfigurableValue;
+import com.nanaios.more_gauge_droppers.network.to_server.PacketVariableGaugeData;
+import com.nanaios.more_gauge_droppers.network.to_server.PacketVariableGaugeData.VariableGaugeDataType;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -23,11 +24,12 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
 
     private int selected = -1;
     private GuiTextField capacityField;
+    private GuiTextField transferRateField;
 
     public GuiConfigurable(ConfigurableItemContainer configurableItemContainer, Inventory inv, Component title) {
         super(configurableItemContainer, inv, title);
         imageWidth = 200;
-        imageHeight = 70;
+        imageHeight = 120;
     }
 
     @Override
@@ -50,6 +52,11 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
         capacityField.setInputValidator(InputValidator.DIGIT)
                 .setEnterHandler(this::setCapacity)
                 .setMaxLength(6);
+
+        transferRateField = addRenderableWidget(new GuiTextField(this, 75, 55, 50, 12));
+        transferRateField.setInputValidator(InputValidator.DIGIT)
+                .setEnterHandler(this::setTransferRate)
+                .setMaxLength(6);
     }
 
     @Override
@@ -58,6 +65,9 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
         drawString(guiGraphics , MoreGaugeDroppersLang.GUI_CAPACITY_TEXT.translate(),13,27,titleTextColor());
         drawString(guiGraphics ,Component.literal("0mb ≦"),45,27,titleTextColor());
         drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),130,27,titleTextColor());
+        drawString(guiGraphics , MoreGaugeDroppersLang.GUI_CAPACITY_TEXT.translate(),13,57,titleTextColor());
+        drawString(guiGraphics ,Component.literal("0mb ≦"),45,57,titleTextColor());
+        drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),130,57,titleTextColor());
     }
 
     private boolean select(int index) {
@@ -82,7 +92,13 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
 
     private void setCapacity() {
         if(!capacityField.getText().isEmpty()) {
-            MoreGaugeDroppers.packetHandler().sendToServer(new PacketConfigurableValue(selected,Integer.parseInt(capacityField.getText())));
+            MoreGaugeDroppers.packetHandler().sendToServer(new PacketVariableGaugeData(VariableGaugeDataType.CAPACITY,selected,Integer.parseInt(capacityField.getText())));
+            capacityField.setText("");
+        }
+    }
+    private void setTransferRate() {
+        if(!capacityField.getText().isEmpty()) {
+            MoreGaugeDroppers.packetHandler().sendToServer(new PacketVariableGaugeData(VariableGaugeDataType.TRANSFER_RATE,selected,Integer.parseInt(transferRateField.getText())));
             capacityField.setText("");
         }
     }

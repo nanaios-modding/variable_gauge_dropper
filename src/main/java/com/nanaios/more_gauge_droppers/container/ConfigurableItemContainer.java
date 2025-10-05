@@ -1,6 +1,6 @@
 package com.nanaios.more_gauge_droppers.container;
 
-import com.nanaios.more_gauge_droppers.item.IConfigurableItem;
+import com.nanaios.more_gauge_droppers.item.IVariableGaugeDropper;
 import com.nanaios.more_gauge_droppers.registries.MoreGaugeDroppersContainerTypes;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
@@ -52,7 +52,7 @@ public class ConfigurableItemContainer extends MekanismContainer {
     }
 
     public static boolean isConfigurableItem(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof IConfigurableItem;
+        return !stack.isEmpty() && stack.getItem() instanceof IVariableGaugeDropper;
     }
 
     public static boolean hasConfigurableItem(Player player) {
