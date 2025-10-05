@@ -97,9 +97,9 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
         }
     }
     private void setTransferRate() {
-        if(!capacityField.getText().isEmpty()) {
+        if(!transferRateField.getText().isEmpty()) {
             MoreGaugeDroppers.packetHandler().sendToServer(new PacketVariableGaugeData(VariableGaugeDataType.TRANSFER_RATE,selected,Integer.parseInt(transferRateField.getText())));
-            capacityField.setText("");
+            transferRateField.setText("");
         }
     }
 }

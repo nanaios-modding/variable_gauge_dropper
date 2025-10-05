@@ -32,7 +32,6 @@ import java.util.function.Consumer;
 public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandler<MergedTank> implements IMekanismFluidHandler, IFluidHandlerItem {
 
     private final int capacity;
-    private final int transferRate;
 
     private final IExtendedFluidTank fluidTank;
     private final IGasTank gasTank;
@@ -48,7 +47,6 @@ public class VariableGaugeDropperContentsHandler extends MergedTankContentsHandl
 
     private VariableGaugeDropperContentsHandler(int capacity,int transferRate) {
         this.capacity = capacity;
-        this.transferRate = transferRate;
 
         fluidTank = new RateLimitFluidHandler.RateLimitFluidTank(() -> transferRate, this::getCapacity, this);
         gasTank = new RateLimitChemicalTank.RateLimitGasTank(() -> transferRate, this::getCapacity, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
