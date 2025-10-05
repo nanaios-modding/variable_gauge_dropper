@@ -70,13 +70,17 @@ public class ItemVariableGaugeDropper extends ItemGaugeDropper implements IVaria
     public void setData(ItemStack stack, VariableGaugeDataType type, int value) {
         CompoundTag nbt = stack.getOrCreateTag();
         switch (type) {
-            case CAPACITY -> nbt.putInt(NBT_CAPACITY, Mth.clamp(0, value,MAX_CAPACITY));
-            case TRANSFER_RATE -> nbt.putInt(NBT_TRANSFER_RATE, Mth.clamp(0, value,readCapacityFromNBT(stack)));
-        }
-        FluidUtil.getFluidHandler(stack).ifPresent(h -> {
-            if(h instanceof VariableGaugeDropperContentsHandler handler) {
-                handler.setStackSize(value);
+            case CAPACITY -> {
+                nbt.putInt(NBT_CAPACITY, Mth.clamp(0, value,MAX_CAPACITY));
+                FluidUtil.getFluidHandler(stack).ifPresent(h -> {
+                    if(h instanceof VariableGaugeDropperContentsHandler handler) {
+                        handler.setStackSize(value);
+                    }
+                });
             }
-        });
+            case TRANSFER_RATE -> {
+                nbt.putInt(NBT_TRANSFER_RATE, Mth.clamp(0, value,readCapacityFromNBT(stack)));
+            }
+        }
     }
 }
