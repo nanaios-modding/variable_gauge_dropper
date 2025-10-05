@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class VariableGaugeDropperKeyHandler {
     public static final KeyMapping configurableKey = new MekKeyBindingBuilder()
-            .category(MoreGaugeDroppersLang.MoreGaugeDroppers)
+            .category(MoreGaugeDroppersLang.MORE_GAUGE_DROPPERS)
             .description(MoreGaugeDroppersLang.KEY_CONFIGURABLE)
             .conflictInGame().keyCode(GLFW.GLFW_KEY_V)
             .onKeyDown((kb, isRepeat) -> {

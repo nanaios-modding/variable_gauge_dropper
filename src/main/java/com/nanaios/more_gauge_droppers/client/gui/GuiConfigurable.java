@@ -23,13 +23,14 @@ import org.jetbrains.annotations.NotNull;
 public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
 
     private int selected = -1;
+    private int capacity = 0;
     private GuiTextField capacityField;
     private GuiTextField transferRateField;
 
     public GuiConfigurable(ConfigurableItemContainer configurableItemContainer, Inventory inv, Component title) {
         super(configurableItemContainer, inv, title);
-        imageWidth = 200;
-        imageHeight = 120;
+        imageWidth = 250;
+        imageHeight = 110;
     }
 
     @Override
@@ -47,13 +48,13 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
                     .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                     .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
-        capacityField = addRenderableWidget(new GuiTextField(this, 75, 25, 50, 12));
+        capacityField = addRenderableWidget(new GuiTextField(this, 100, 25, 50, 12));
         capacityField.setFocused(true);
         capacityField.setInputValidator(InputValidator.DIGIT)
                 .setEnterHandler(this::setCapacity)
                 .setMaxLength(6);
 
-        transferRateField = addRenderableWidget(new GuiTextField(this, 75, 55, 50, 12));
+        transferRateField = addRenderableWidget(new GuiTextField(this, 100, 55, 50, 12));
         transferRateField.setInputValidator(InputValidator.DIGIT)
                 .setEnterHandler(this::setTransferRate)
                 .setMaxLength(6);
@@ -62,12 +63,16 @@ public class GuiConfigurable extends GuiMekanism<ConfigurableItemContainer> {
     @Override
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        drawString(guiGraphics , MoreGaugeDroppersLang.GUI_CAPACITY_TEXT.translate(),13,27,titleTextColor());
-        drawString(guiGraphics ,Component.literal("0mb ≦"),45,27,titleTextColor());
-        drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),130,27,titleTextColor());
-        drawString(guiGraphics , MoreGaugeDroppersLang.GUI_CAPACITY_TEXT.translate(),13,57,titleTextColor());
-        drawString(guiGraphics ,Component.literal("0mb ≦"),45,57,titleTextColor());
-        drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),130,57,titleTextColor());
+        drawString(guiGraphics , MoreGaugeDroppersLang.GUI_CAPACITY_TEXT.translate(),18,27,titleTextColor());
+        drawString(guiGraphics ,Component.literal("0mb ≦"),70,27,titleTextColor());
+        drawString(guiGraphics ,Component.literal("≦ " + ItemVariableGaugeDropper.MAX_CAPACITY + "mb"),155,27,titleTextColor());
+        drawString(guiGraphics , MoreGaugeDroppersLang.GUI_TRANSFER_TEXT.translate(),18,57,titleTextColor());
+        drawString(guiGraphics ,Component.literal("0mb ≦"),70,57,titleTextColor());
+        ItemStack stack = getStack(selected);
+        if(stack.getItem() instanceof ItemVariableGaugeDropper) {
+            capacity = ItemVariableGaugeDropper.readCapacityFromNBT(stack);
+        }
+        drawString(guiGraphics ,Component.literal("≦ " + capacity + "mb"),155,57,titleTextColor());
     }
 
     private boolean select(int index) {

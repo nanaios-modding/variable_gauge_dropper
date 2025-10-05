@@ -1,9 +1,10 @@
 {
-  "constants.more_gauge_droppers.mod_name": "Variable Gauge Dropper",
+  "constants.more_gauge_droppers.mod_name": "More Gauge Droppers",
   "key.more_gauge_droppers.configurable": "Configure Dropper",
   "item.more_gauge_droppers.variable_gauge_dropper": "Variable Gauge Dropper",
   "item.more_gauge_droppers.radioactive_gas_gauge_dropper": "Radioactive Gas Gauge Dropper",
   "description.more_gauge_droppers.variable_gauge_dropper": "An enhanced dropper with adjustable capacity. Use the %1$s key to change the capacity.",
-  "gui.more_gauge_droppers.text.capacity": "Cap :",
+  "gui.more_gauge_droppers.text.capacity": "Capacity",
+  "gui.more_gauge_droppers.text.transfer": "Transfer",
   "description.more_gauge_droppers.radioactive_gas_gauge_dropper": "A dropper designed to handle radioactive gases. You will be exposed to radiation when holding or disposing of radioactive gases. Handle with care."
 }

@@ -5,8 +5,9 @@ import net.minecraft.Util;
 import org.jetbrains.annotations.NotNull;
 
 public enum MoreGaugeDroppersLang implements ILangEntry {
-    MoreGaugeDroppers("constants","mod_name"),
+    MORE_GAUGE_DROPPERS("constants","mod_name"),
     GUI_CAPACITY_TEXT("gui","text.capacity"),
+    GUI_TRANSFER_TEXT("gui","text.transfer"),
     DESCRIPTION_VARIABLE_GAUGE_DROPPER("description","variable_gauge_dropper"),
     DESCRIPTION_RADIOACTIVE_GAS_GAUGE_DROPPER("description","radioactive_gas_gauge_dropper"),
     KEY_CONFIGURABLE("key", "configurable");
